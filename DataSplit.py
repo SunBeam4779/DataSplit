@@ -3,9 +3,12 @@ import re
 # import linecache
 
 data_string = []
-channel = 1  # channel 1 for ECG, channel 2 for respiration.
-index = 103  # the index of data
-number_of_line = 10  # number of lines to be cut off. Not be used by now.
+# channel 1 for ECG, channel 2 for respiration.
+channel = 1
+# the index of data
+index = 103
+# number of lines to be cut off. Not be used by now.
+number_of_line = 10
 
 
 def get_address(ch, data_index):

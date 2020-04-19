@@ -2,19 +2,22 @@ import os
 import re
 # import linecache
 
-data_string = []
-# channel 1 for ECG, channel 2 for respiration.
-channel = 1
+# data_string = []
+data_string = ""
+# channel 2 for ECG, channel 1 for respiration.
+channel = 2
 # the index of data
-index = 103
+index = 143
 # number of lines to be cut off. Not be used by now.
 number_of_line = 10
+# there is a single data at the beginning
+single = 1
 
 
 def get_address(ch, data_index):
     # noinspection PyGlobalUndefined
     global complement_data, final_data
-    address = "D:\\My Documents\\CC2640R2F Project\\data\\"
+    address = "D:\\My Documents\\ECG Detector Project\\data\\"
     data_file = open(os.path.join(address, ("data" + str(data_index) + ".txt")))
     if ch == 1:
         complement_data = open(os.path.join(address, ("RESP\\data" + str(data_index) + "_two's complement.txt")), 'a')
@@ -27,58 +30,110 @@ def get_address(ch, data_index):
 
 def process_string(data, files):
     for line in files.readlines():
-        # for num in range(count_of_line):
-        # print(line)
         string1 = line.split(":")[-1]
-        # string1 = linecache.getline(files, num + 1).split(":")[-1]
-        # print(string1)
-        # string2 = string1.split("C0 C0 00 00")
-        string2 = re.split("C[0246E] C[0246E] [0246E]0 00", string1)
+        # string2 = re.split("C[0246E] C[0246E] [0246E]0 00", string1)
+        string2 = re.split("C0", string1)
         string3 = "".join(string2)
-        string3 = re.split(r"\"C[02] [0246E]0 00 ", string3)
-        string3 = "".join(string3)
-        # string3 = string3.split((" C[02]" + "\""))[0]
-        string3 = string3[1: -5]
-        string3 = "".join(string3)
+        # string3 = re.split(r"\"C[02] [0246E]0 00 ", string3)
+        # string3 = "".join(string3)
+        # string3 = string3[1: -5]
+        # string3 = "".join(string3)
+        # string4 = string3.lower()
         string4 = string3.lower()
-        # string4 = string3.split("\"")[-1]
-        length = len(string4)
-        # print(length)
+        # string5 = string4.split(" ")
+        # string6 = "".join(string5)
+        string6 = string4.split("\"")
+        string6 = "".join(string6)
+        string7 = string6.split("\n")
+        string = "".join(string7)
+        # length = len(string4)
 
-        # string_a = string_a.split(" ", 1)[1]  # 1
-        # string_b = string_b.split(" ", 1)[0]  # 2
-        # print(string_a)
-        if length == 36:
-            string_a = string4.split("  ")[0]
-            string_b = string4.split("  ")[1]
-            data.append(string_a)
-            data.append(string_b)
-        else:
-            string_a = string4.split("  ")[0]
-            data.append(string_a)
-    return data
+        # if length == 36:
+        #     string_a = string4.split("  ")[0]
+        #     string_b = string4.split("  ")[1]
+        #     data.append(string_a)
+        #     data.append(string_b)
+        # else:
+        #     string_a = string4.split("  ")[0]
+        #     data.append(string_a)
+
+        data += string
+
+    data1 = data.split(" 00 00 00 ")
+    data_ = "".join(data1)
+    return data_
 
 
 def switch_form(channels, files):
     # noinspection PyGlobalUndefined
     global result
+    item = 0
     data_buf = []
-    for lines in data_string:
-        string_ = lines.split(" ")
-        if channels == 1:
-            result = '0x'
-            result = result + ''.join(string_[-6])
-            result = result + ''.join(string_[-5])
-            result = result + ''.join("00")
+    data = data_string.split(" ")
+    data = "".join(data)
+    data = data.split(" ")
+    data = "".join(data)
+    length = len(data)
+    # for lines in data_string:
+    while item < length:
+        # string_ = lines.split(" ")
+        if single == 1:
+            if channels == 1:
+                result = '0x'
+                # result = result + ''.join(string_[-6])
+                # result = result + ''.join(string_[-5])
+                # result = result + ''.join("00")
 
-        if channels == 2:
-            result = '0x'
-            result = result + ''.join(string_[-3])
-            result = result + ''.join(string_[-2])
-            result = result + ''.join("00")
+                result = result + ''.join(data[item + 4])
+                result = result + ''.join(data[item + 5])
+                result = result + ''.join(data[item + 6])
+                result = result + ''.join(data[item + 7])
+                result = result + ''.join("00")
+
+            if channels == 2:
+                result = '0x'
+                # result = result + ''.join(string_[-3])
+                # result = result + ''.join(string_[-2])
+                # result = result + ''.join("00")
+
+                result = result + ''.join(data[item])
+                result = result + ''.join(data[item + 1])
+                result = result + ''.join(data[item + 2])
+                result = result + ''.join(data[item + 3])
+                result = result + ''.join("00")
+        else:
+            if channels == 1:
+                result = '0x'
+                # result = result + ''.join(string_[-6])
+                # result = result + ''.join(string_[-5])
+                # result = result + ''.join("00")
+
+                result = result + ''.join(data[item])
+                result = result + ''.join(data[item + 1])
+                result = result + ''.join(data[item + 2])
+                result = result + ''.join(data[item + 3])
+                result = result + ''.join("00")
+
+            if channels == 2:
+                result = '0x'
+                # result = result + ''.join(string_[-3])
+                # result = result + ''.join(string_[-2])
+                # result = result + ''.join("00")
+
+                result = result + ''.join(data[item + 4])
+                result = result + ''.join(data[item + 5])
+                result = result + ''.join(data[item + 6])
+                result = result + ''.join(data[item + 7])
+                result = result + ''.join("00")
+
+        item += 8
 
         data_buf.append(result)
-        # print(result)
+        if item + 3 > length:
+            break
+        if item + 7 > length:
+            break
+        print(result)
     for item in data_buf:
         files.write(item)
         files.write("\n")

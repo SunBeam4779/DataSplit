@@ -5,9 +5,9 @@ import re
 # data_string = []
 data_string = ""
 # channel 2 for ECG, channel 1 for respiration.
-channel = 1
+channel = 2
 # the index of data
-index = 144
+index = 143
 # number of lines to be cut off. Not be used by now.
 number_of_line = 10
 # there is a single data at the beginning
@@ -59,7 +59,8 @@ def process_string(data, files):
 
         data += string
 
-    data1 = re.split("c0 00 00 00 [c0]0", data)
+    # data1 = re.split("c0 00 00 00 [c0]0", data)
+    data1 = re.split("c0 c0", data)
     data_ = "".join(data1)
     return data_
 

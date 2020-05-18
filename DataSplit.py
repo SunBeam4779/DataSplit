@@ -1,6 +1,10 @@
 import os
 import re
-# import linecache
+
+"""
+    Try to find a line which starts with "0xC0" at the beginning of source data, and delete those lines above it.
+    Try to find a line which ends with "0xC0" at the bottom of source data, and delete those lines below it.
+"""
 
 # data_string = []
 data_string = ""

@@ -7,7 +7,7 @@ data_string = ""
 # channel 2 for ECG, channel 1 for respiration.
 channel = 2
 # the index of data
-index = 143
+index = 167
 # number of lines to be cut off. Not be used by now.
 number_of_line = 10
 # there is a single data at the beginning
@@ -29,6 +29,7 @@ def get_address(ch, data_index):
 
 
 def process_string(data, files):
+
     for line in files.readlines():
         string1 = line.split(":")[-1]
         # string2 = re.split("C[0246E] C[0246E] [0246E]0 00", string1)
@@ -74,6 +75,8 @@ def switch_form(channels, files):
     data = "".join(data)
     data = data.split(" ")
     data = "".join(data)
+    # length1 = len(data)
+    data = data[2:-2]
     length = len(data)
     # for lines in data_string:
     while item < length:

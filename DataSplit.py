@@ -9,9 +9,9 @@ import re
 # data_string = []
 data_string = ""
 # the index of data
-index = 185
+index = 182
 # two channels of ECG be used: 0 for respiration and ECG, 1 for two channels of ECG
-Two_Channels = 0
+Two_Channels = 1
 # there is a single data at the beginning
 single = 0
 
@@ -28,13 +28,13 @@ def get_address(data_index, channels):
     dec = "_dec.txt"
     if channels:
         complement_data1 = \
-            open(os.path.join(address, (channels_path + str(data_index) + "_Channel1_" + twos_complement)), 'a')
+            open(os.path.join(address, (channels_path + str(data_index) + "_Channel1" + twos_complement)), 'a')
         final_data1 = \
-            open(os.path.join(address, (channels_path + str(data_index) + "_Channel1_" + dec)), 'a')
+            open(os.path.join(address, (channels_path + str(data_index) + "_Channel1" + dec)), 'a')
         complement_data2 = \
-            open(os.path.join(address, (channels_path + str(data_index) + "_Channel2_" + twos_complement)), 'a')
+            open(os.path.join(address, (channels_path + str(data_index) + "_Channel2" + twos_complement)), 'a')
         final_data2 = \
-            open(os.path.join(address, (channels_path + str(data_index) + "_Channel2_" + dec)), 'a')
+            open(os.path.join(address, (channels_path + str(data_index) + "_Channel2" + dec)), 'a')
     else:
         complement_data1 = \
             open(os.path.join(address, (resp_path + str(data_index) + twos_complement)), 'a')

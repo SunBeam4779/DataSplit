@@ -46,25 +46,6 @@ def get_address(data_index, channels):
     return data_file, complement_data1, final_data1, complement_data2, final_data2
 
 
-def get_two_ecg_address(data_index):
-    # noinspection PyGlobalUndefined
-    global complement_data, final_data
-    address = "D:\\My Documents\\ECG Detector Project\\data\\"
-    data_file = open(os.path.join(address, ("data" + str(data_index) + ".txt")))
-    channels_path = "ECG\\TwoChannels\\data"
-    twos_complement = "_two's complement.txt"
-    dec = "_dec.txt"
-    complement_data1 = \
-        open(os.path.join(address, (channels_path + str(data_index) + "_Channel1_" + twos_complement)), 'a')
-    final_data1 = \
-        open(os.path.join(address, (channels_path + str(data_index) + "_Channel1_" + dec)), 'a')
-    complement_data2 = \
-        open(os.path.join(address, (channels_path + str(data_index) + "_Channel2_" + twos_complement)), 'a')
-    final_data2 = \
-        open(os.path.join(address, (channels_path + str(data_index) + "_Channel2_" + dec)), 'a')
-    return data_file, complement_data1, final_data1, complement_data2, final_data2
-
-
 def process_string(data, files):
 
     for line in files.readlines():

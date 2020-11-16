@@ -7,20 +7,21 @@ import re
 """
 
 # data_string = []
-data_string = ""
+# data_string = ""
 # the index of data
-index = 182
-# two channels of ECG be used: 0 for respiration and ECG, 1 for two channels of ECG
-Two_Channels = 1
+index = 997
+# two channels of ECG be used: False for respiration and ECG, True for two channels of ECG
+Two_Channels = True
 # there is a single data at the beginning
-single = 0
+single = 1
 
 
 def get_address(data_index, channels):
     # noinspection PyGlobalUndefined
     global complement_data, final_data
+    address_of_source = "D:\\My Documents\\ECG Detector Project\\data\\source\\"
     address = "D:\\My Documents\\ECG Detector Project\\data\\"
-    data_file = open(os.path.join(address, ("data" + str(data_index) + ".txt")))
+    data_file = open(os.path.join(address_of_source, ("data" + str(data_index) + ".txt")))
     resp_path = "RESP\\data"
     ecg_path = "ECG\\data"
     channels_path = "ECG\\TwoChannels\\data"
@@ -46,83 +47,141 @@ def get_address(data_index, channels):
     return data_file, complement_data1, final_data1, complement_data2, final_data2
 
 
-def process_string(data, files):
+def process_string(files):
+
+    res = []
+    count = 0
+    data = ""
+    idx = 0
+    target = 72
+    head = 0
 
     for line in files.readlines():
+        if head < 3:
+            head += 1
+            continue
+        count += 1
+        idx += 1
         string1 = line.split(":")[-1]
         string2 = string1.lower()
         string3 = string2.split("\"")
-        string3 = "".join(string3)
-        string4 = string3.split("\n")
+        # string3 = "".join(string3)
+        # string4 = string3.split("\n")
+        string4 = string3[1]
         string = "".join(string4)
-
         data += string
-
-    data1 = re.split("c0 c0", data)
-    data_ = "".join(data1)
-    return data_
+        if count == 3:
+            data1 = re.split("c0 c0", data)
+            item = "".join(data1[1:-1])
+            if len(data1[0]) == len(data1[-1]) == 15:
+                data1[0] = data1[0][3:]
+                data1[-1] = data1[-1][:-3]
+                item1 = data1[0] + item
+                item = item1 + data1[-1]
+                target = 80
+            data = item.split(" ")
+            data = "".join(data)
+            data = data.split(" ")
+            data = "".join(data)
+            if len(data) == target:
+                res.append(data)
+            data = ""
+            count = 0
+    # data1 = re.split("c0 c0", data)
+    # data_ = "".join(data1)
+    return res
 
 
 def switch_form(files1, files2):
     # noinspection PyGlobalUndefined
     global result1, result2
-    item = 0
+
     data_buf1 = []
     data_buf2 = []
-    data = data_string.split(" ")
-    data = "".join(data)
-    data = data.split(" ")
-    data = "".join(data)
-    if single == 0:
-        data = data[2:-2]
 
-    length = len(data)
-    while item < length:
-        if single == 1:
+    # data = data_string.split(" ")
+    # data = "".join(data)
+    # data = data.split(" ")
+    # data = "".join(data)
+    # if single == 0:
+    #     data = data[2:-2]
+    #
+    # length = len(data)
+    # while item < length:
+    #     if single == 1:
+    #         result1 = '0x'
+    #         result1 = result1 + ''.join(data[item + 4])
+    #         result1 = result1 + ''.join(data[item + 5])
+    #         result1 = result1 + ''.join(data[item + 6])
+    #         result1 = result1 + ''.join(data[item + 7])
+    #         result1 = result1 + ''.join("00")
+    #
+    #         result2 = '0x'
+    #         result2 = result2 + ''.join(data[item])
+    #         result2 = result2 + ''.join(data[item + 1])
+    #         result2 = result2 + ''.join(data[item + 2])
+    #         result2 = result2 + ''.join(data[item + 3])
+    #         result2 = result2 + ''.join("00")
+    #     else:
+    #         result1 = '0x'
+    #         result1 = result1 + ''.join(data[item])
+    #         result1 = result1 + ''.join(data[item + 1])
+    #         result1 = result1 + ''.join(data[item + 2])
+    #         result1 = result1 + ''.join(data[item + 3])
+    #         result1 = result1 + ''.join("00")
+    #
+    #         result2 = '0x'
+    #         result2 = result2 + ''.join(data[item + 4])
+    #         result2 = result2 + ''.join(data[item + 5])
+    #         result2 = result2 + ''.join(data[item + 6])
+    #         result2 = result2 + ''.join(data[item + 7])
+    #         result2 = result2 + ''.join("00")
+    #
+    #     item += 8
+    #
+    #     data_buf1.append(result1)
+    #     data_buf2.append(result2)
+    #     if item + 3 > length:
+    #         break
+    #     if item + 7 > length:
+    #         break
+    #     print(result1)
+    #     print(result2)
+    # for item in data_buf1:
+    #     files1.write(item)
+    #     files1.write("\n")
+    # for item in data_buf2:
+    #     files2.write(item)
+    #     files2.write("\n")
+    for item in data_string:
+        i = 0
+        length = len(item)
+        while i < length:
             result1 = '0x'
-            result1 = result1 + ''.join(data[item + 4])
-            result1 = result1 + ''.join(data[item + 5])
-            result1 = result1 + ''.join(data[item + 6])
-            result1 = result1 + ''.join(data[item + 7])
+            result1 = result1 + ''.join(item[i])
+            result1 = result1 + ''.join(item[i + 1])
+            result1 = result1 + ''.join(item[i + 2])
+            result1 = result1 + ''.join(item[i + 3])
             result1 = result1 + ''.join("00")
 
             result2 = '0x'
-            result2 = result2 + ''.join(data[item])
-            result2 = result2 + ''.join(data[item + 1])
-            result2 = result2 + ''.join(data[item + 2])
-            result2 = result2 + ''.join(data[item + 3])
-            result2 = result2 + ''.join("00")
-        else:
-            result1 = '0x'
-            result1 = result1 + ''.join(data[item])
-            result1 = result1 + ''.join(data[item + 1])
-            result1 = result1 + ''.join(data[item + 2])
-            result1 = result1 + ''.join(data[item + 3])
-            result1 = result1 + ''.join("00")
-
-            result2 = '0x'
-            result2 = result2 + ''.join(data[item + 4])
-            result2 = result2 + ''.join(data[item + 5])
-            result2 = result2 + ''.join(data[item + 6])
-            result2 = result2 + ''.join(data[item + 7])
+            result2 = result2 + ''.join(item[i + 4])
+            result2 = result2 + ''.join(item[i + 5])
+            result2 = result2 + ''.join(item[i + 6])
+            result2 = result2 + ''.join(item[i + 7])
             result2 = result2 + ''.join("00")
 
-        item += 8
+            i += 8
 
-        data_buf1.append(result1)
-        data_buf2.append(result2)
-        if item + 3 > length:
-            break
-        if item + 7 > length:
-            break
-        print(result1)
-        print(result2)
-    for item in data_buf1:
-        files1.write(item)
-        files1.write("\n")
-    for item in data_buf2:
-        files2.write(item)
-        files2.write("\n")
+            data_buf1.append(result1)
+            data_buf2.append(result2)
+            files1.write(result1)
+            files1.write("\n")
+            files2.write(result2)
+            files2.write("\n")
+            print(result1)
+            print(result2)
+
     return data_buf1, data_buf2
 
 
@@ -159,7 +218,7 @@ def get_lines(file):
 
 
 datafile, final1, get_res1, final2, get_res2 = get_address(index, Two_Channels)
-data_string = process_string(data_string, datafile)
+data_string = process_string(datafile)
 data_result1, data_result2 = switch_form(final1, final2)
 get_dec(data_result1, data_result2, get_res1, get_res2)
 datafile.close()
@@ -167,13 +226,13 @@ final1.close()
 get_res1.close()
 final2.close()
 get_res2.close()
-# count_of_line = get_lines(datafile)
 print("finished!")
 
+
+# -------------------------------    old version for old module   -------------------------------
 #
 #
-#
-'''    old version for old module.    '''
+
 #
 #
 #
